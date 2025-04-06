@@ -64,7 +64,7 @@ public class WorldSchematic extends World
     protected int entityCount;
     private final TickManager tickManager;
     private final RegistryEntry<DimensionType> dimensionType;
-    private DimensionEffects dimensionEffects = new DimensionEffects.Overworld();
+    private DimensionEffects dimensionEffects;
     private HashMap<UUID, ChunkPos> entityMap;
     private SchematicEntityLookup<Entity> entityLookup;
 
@@ -83,6 +83,7 @@ public class WorldSchematic extends World
         this.worldRenderer = worldRenderer;
         this.chunkManagerSchematic = new ChunkManagerSchematic(this);
         this.dimensionType = dimension;
+        this.dimensionEffects = dimension.value().dimensionSpecialEffects();
         if (!registryManager.equals(DynamicRegistryManager.EMPTY))
         {
             this.setDimension(registryManager);
@@ -122,7 +123,7 @@ public class WorldSchematic extends World
             }
         });
     
-        this.dimensionEffects = DimensionEffects.byDimensionType(this.dimensionType.value());
+        this.dimensionEffects = this.dimensionType.value().dimensionSpecialEffects();
     }
 
     public ChunkManagerSchematic getChunkProvider()
@@ -452,7 +453,7 @@ public class WorldSchematic extends World
     @Override
     public float getBrightness(Direction direction, boolean shaded)
     {
-        boolean darkened = this.getDimensionEffects().isDarkened();
+        boolean darkened = this.getDimensionEffects().darkened();
 
         if (!shaded)
         {
